@@ -6,7 +6,6 @@ import io
 
 app = FastAPI()
 
-# ✅ Allow frontend (React) to connect
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,12 +14,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ✅ Store resume text globally
+
 resume_text = ""
 
-# ---------------------------------------
-# 📄 Upload Resume API
-# ---------------------------------------
 @app.post("/upload")
 async def upload_resume(file: UploadFile = File(...)):
     global resume_text
@@ -39,9 +35,6 @@ async def upload_resume(file: UploadFile = File(...)):
     return {"message": "Resume processed successfully"}
 
 
-# ---------------------------------------
-# 💬 Chat API (Ollama)
-# ---------------------------------------
 @app.post("/chat")
 async def chat(data: dict):
     user_input = data.get("message", "")
@@ -49,10 +42,10 @@ async def chat(data: dict):
     if not resume_text:
         return {"response": "⚠️ Please upload your resume first."}
 
-    # ✅ Trim resume (VERY IMPORTANT for speed)
+ 
     trimmed_resume = resume_text[:1500]
 
-    # ✅ Clean structured prompt
+    
     prompt = f"""
 You are a professional career assistant.
 
